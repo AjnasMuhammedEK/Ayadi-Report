@@ -47,17 +47,18 @@ const Home = () => {
         // ✅ Start loading
         setIsLoading(true);
 
+        const BASE_URL = "https://ayadi-report-backend.onrender.com";
         let apiUrl = "";
 
         // ✅ SELECT API BASED ON CLASS
         if (section === "1" || section === "2") {
-          apiUrl = "http://localhost:5000/getStudentsA";
+          apiUrl = `${BASE_URL}/getStudentsA`;
         } 
         else if (section === "3" || section === "4" || section === "5") {
-          apiUrl = "http://localhost:5000/getStudentsB";
+          apiUrl = `${BASE_URL}/getStudentsB`;
         } 
         else {
-          apiUrl = "http://localhost:5000/getStudentsC";
+          apiUrl = `${BASE_URL}/getStudentsC`;
         }
 
         const response = await fetch(apiUrl, {
