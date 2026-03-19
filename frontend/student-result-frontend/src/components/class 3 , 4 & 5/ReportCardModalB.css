@@ -1,0 +1,566 @@
+/* ════════════════════════════════════════════════════
+   CSS VARIABLES
+   ─────────────────────────────────────────────────────
+   A4 content width  = 794 - 56(left pad) - 26(right pad) = 712 px
+   Gap between blocks = 9 px
+   Left + Right available = 703 px
+
+   Left  block flex = 430  |  Right block flex = 273
+   Subject col  = 157px → 36.5% of 430
+   Score col    =  40px → 9.3%  of 430  |  14.65% of 273
+   Grade col    =  33px → 7.67% of 430  |  12.09% of 273
+════════════════════════════════════════════════════ */
+:root {
+  --lft:          430;
+  --rgt:          330;
+  --gap:          9px;
+
+  --row-h:        26px;
+  --row-h-tall:   38px;
+  --hdr-h:        46px;
+  --lower-h:      30px;
+  --result-h:     38px;
+
+  /* column widths as % of their parent block */
+  --subj-w:       20.5%;   /* 157 / 430 */
+  --sm-w-l:       9.3%;    /* 40  / 430  — left  block score cols */
+  --gr-w-l:       7.67%;   /* 33  / 430  — left  block grade col  */
+  --sm-w-r:       14.65%;  /* 40  / 273  — right block score cols */
+  --gr-w-r:       12.09%;  /* 33  / 273  — right block grade col  */
+
+  --border:       1px solid #222;
+  --font:         Arial, Helvetica, sans-serif;
+  --blue:         #1a3a8c;
+}
+
+/* ════════════════════════════════════════════════════
+   MODAL OVERLAY
+════════════════════════════════════════════════════ */
+.rc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* ════════════════════════════════════════════════════
+   MODAL CONTAINER
+════════════════════════════════════════════════════ */
+.rc-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+  width: 95vw;
+  max-width: 900px;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════════
+   MODAL HEADER
+════════════════════════════════════════════════════ */
+.rc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-bottom: 1px solid #ddd;
+  background: #f5f5f5;
+  flex-shrink: 0;
+  border-radius: 10px 10px 0 0;
+}
+.rc-modal-title {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+}
+.rc-modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.rc-btn-pdf,
+.rc-btn-print,
+.rc-btn-close {
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-family: var(--font);
+  font-weight: 600;
+}
+.rc-btn-pdf         { background: #2e7d32; color: #fff; }
+.rc-btn-pdf:hover   { background: #1b5e20; }
+.rc-btn-print       { background: #1a3a8c; color: #fff; }
+.rc-btn-print:hover { background: #122a6a; }
+.rc-btn-close       { background: #e53935; color: #fff; }
+.rc-btn-close:hover { background: #b71c1c; }
+
+/* ════════════════════════════════════════════════════
+   MODAL BODY  — scrollable grey canvas
+════════════════════════════════════════════════════ */
+.rc-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #b0b0b0;
+  display: flex;
+  justify-content: center;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+/* ── PREVIEW WRAPPER
+   Height is set inline via JS (1123 * scale) so the
+   scrollable area collapses correctly after scaling.   */
+.rc-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* ════════════════════════════════════════════════════
+   A4 PAGE  — always 794 × 1123 px internally.
+   Scaling is applied via inline style transform in JSX.
+   transform-origin: top center keeps it centred.
+════════════════════════════════════════════════════ */
+.rc-page {
+  background: #fff;
+  width: 794px;
+  min-height: 1123px;
+  padding: 3.52% 5.27% 2.27% 5.27%;
+  box-sizing: border-box;
+  font-family: var(--font);
+  font-size: 11px;
+  box-shadow: 0 2px 14px rgba(0,0,0,.35);
+  flex-shrink: 0;
+  position: relative;
+  transform-origin: top center;
+   
+}
+
+/* ════════════════════════════════════════════════════
+   1. SCHOOL HEADER
+════════════════════════════════════════════════════ */
+.rc-school-header {
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 17%;
+}
+.rc-school-name {
+  font-family: 'Libre Baskerville', 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--blue);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.rc-school-affil {
+  font-size: 12px;
+  font-style: italic;
+  color: #111;
+  margin-top: 3px;
+}
+.rc-school-addr {
+  font-size: 12px;
+  color: #111;
+  margin-top: 1px;
+}
+.rc-annual-badge {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 26px;
+  border-radius: 4px;
+  margin-top: 9px;
+  text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════════════════
+   2. STUDENT DETAILS
+════════════════════════════════════════════════════ */
+.rc-details {
+  margin: 10px 0;
+  font-size: 11.5px;
+}
+.rc-detail-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+.rc-detail-multi { flex-wrap: nowrap; }
+.rc-detail-label {
+  white-space: nowrap;
+  font-weight: 400;
+  flex-shrink: 0;
+  color: #111;
+}
+.rc-detail-line {
+  border-bottom: 1.5px solid #333;
+  flex: 1;
+  min-width: 80px;
+  height: 17px;
+  display: inline-block;
+  line-height: 17px;
+  padding: 0 3px;
+  font-size: 11.5px;
+  color: #111;
+}
+.rc-detail-short { min-width: 70px;  flex: 0.55; }
+.rc-detail-long  { min-width: 130px; flex: 1.4;  }
+.rc-detail-mid   { margin-left: 8px; }
+
+/* ════════════════════════════════════════════════════
+   3. ACADEMIC AREA
+════════════════════════════════════════════════════ */
+.rc-academic-area { margin-top: 6px; }
+
+/* ── SHARED FLEX BLOCKS (used by tabs row, tables row,
+      lower row, result row — all must share same flex) */
+.rc-left-block  { flex: var(--lft); min-width: 0; overflow: hidden; }
+.rc-right-block { flex: var(--rgt); min-width: 0; overflow: hidden; }
+.rc-table-gap   { width: var(--gap); flex-shrink: 0; }
+
+/* ── TERM TABS ROW
+   Mirrors the exact same flex layout as rc-tables-row
+   so tabs stay perfectly centred over their score cols. */
+.rc-term-tabs-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0;
+}
+
+/* Left block inner — subject space + scores area + grade space */
+.rc-tab-left-inner {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  margin-left: -0.1%;
+}
+.rc-tab-subj-space {
+  /* matches subject col: 36.5% of left block */
+  width: var(--subj-w);
+  flex-shrink: 0;
+}
+.rc-tab-scores-area {
+  /* spans the 6 score cols: 6 × 9.3% = 55.8% of left block */
+  width: 55.8%;
+  /* margin-left: 7%; */
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.rc-tab-grade-space-l {
+  /* matches left grade col: 7.67% of left block */
+  flex: 1;
+}
+
+/* Right block inner — scores area + grade space */
+.rc-tab-right-inner {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+}
+.rc-tab-scores-area-r {
+  /* spans 6 score cols: 6 × 14.65% = 87.9% of right block */
+  width: 87.9%;
+  margin-left: -2%;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.rc-tab-grade-space-r {
+  /* matches right grade col: 12.09% of right block */
+  flex: 1;
+}
+
+.rc-term-tab {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 18px;
+  border-radius: 6px 6px 0 0;
+  text-transform: uppercase;
+  position: relative;
+  bottom: -1px;
+  z-index: 2;
+  white-space: nowrap;
+  margin-right: 69%;
+}
+
+/* ── TABLES ROW */
+.rc-tables-row {
+  display: flex;
+  align-items: stretch;
+}
+
+/* ── SHARED TABLE */
+.rc-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 9px;
+  font-family: var(--font);
+}
+
+/* LEFT block col widths */
+.rc-left-block  .col-subj { width: var(--subj-w); }
+.rc-left-block  .col-sm   { width: var(--sm-w-l); }
+.rc-left-block  .col-gr   { width: var(--gr-w-l); }
+
+/* RIGHT block col widths */
+.rc-right-block .col-sm   { width: var(--sm-w-r); }
+.rc-right-block .col-gr   { width: var(--gr-w-r); }
+
+/* Header */
+.rc-thead-row th.rc-th {
+  border: var(--border);
+  height: var(--hdr-h);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 1px;
+  word-break: break-word;
+  line-height: 1.25;
+  color: #111;
+  background: #fff;
+}
+.rc-th-subj { font-size: 9px  !important; font-weight: 700 !important; }
+.rc-th-gr   { font-size: 8px  !important; }
+
+/* Body rows */
+.rc-tr td.rc-td {
+  border: var(--border);
+  height: var(--row-h);
+  vertical-align: middle;
+  padding: 0 2px;
+  font-size: 9px;
+  color: #111;
+}
+.rc-tr-tall td.rc-td { height: var(--row-h-tall); }
+
+.rc-td-subj {
+  text-align: left;
+  padding-left: 4px !important;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 1.3;
+  word-break: break-word;
+}
+.rc-td-c { text-align: center; }
+
+/* ── LOWER ROW (DISCIPLINE + REMARKS) */
+.rc-lower-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 6px;
+}
+.rc-tr-lower td.rc-td {
+  height: var(--lower-h);
+  font-size: 9px;
+  border: var(--border);
+  vertical-align: middle;
+  padding: 0 5px;
+  color: #111;
+}
+.rc-td-lower-lbl {
+  font-weight: 700;
+  text-align: left;
+  padding-left: 4px !important;
+  white-space: nowrap;
+ 
+}
+
+/* ── RESULT ROW
+   Aligns perfectly under the right block.             */
+.rc-result-outer {
+  display: flex;
+  align-items: stretch;
+  
+}
+.rc-result-left-space {
+  /* same width as left block — pushes result under right block */
+  flex: var(--lft);
+  margin-left: -4%;
+  
+}
+.rc-result-gap {
+  width: var(--gap);
+  flex-shrink: 0;
+  
+}
+.rc-result-right-block {
+  flex: var(--rgt);
+  border-left: var(--border);
+  border-right: var(--border);
+  border-bottom: var(--border);
+  border-top: none;
+  height: var(--result-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+.rc-result-badge {
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.rc-result-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* ════════════════════════════════════════════════════
+   4. PRINCIPAL + SEAL
+════════════════════════════════════════════════════ */
+.rc-principal-area {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: 10px;
+  gap: 16px;
+  padding-right: 0;
+}
+.rc-seal-img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+.rc-principal-block {
+  text-align: center;
+  font-family: var(--font);
+}
+.rc-principal-label {
+  font-weight: 700;
+  font-size: 11px;
+  color: #111;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.rc-signature-img {
+  width: 100px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 2px;
+}
+.rc-principal-name  { font-size: 11px; font-weight: 700; color: #111; text-transform: uppercase; }
+.rc-principal-title { font-size: 10px; color: #111; text-transform: uppercase; }
+.rc-principal-school{ font-size: 9.5px; font-weight: 700; color: #111; text-transform: uppercase; }
+.rc-principal-extra { font-size: 8.5px; color: #111; }
+.rc-principal-state { font-weight: 700; font-size: 9px; text-transform: uppercase; }
+
+/* ════════════════════════════════════════════════════
+   5. FOOTER GRADING TABLES
+════════════════════════════════════════════════════ */
+.rc-footer-tables {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 10px;
+  border-top: 1px solid #999;
+  padding-top: 5px;
+}
+.rc-footer-left  { flex: 3;   }
+.rc-footer-right { flex: 1.1; }
+
+.rc-footer-title {
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.rc-footer-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.rc-ftd {
+  border: 1px solid #555;
+  font-size: 7.5px;
+  padding: 2px 1px;
+  text-align: center;
+  height: 15px;
+  vertical-align: middle;
+  color: #111;
+  word-break: break-word;
+}
+.rc-ftd-lbl  { font-weight: 700; text-align: left; padding-left: 3px; width: 22%; }
+.rc-ftd-wide { font-size: 7px; }
+
+/* ════════════════════════════════════════════════════
+   PRINT  — render at true A4, no transform needed
+════════════════════════════════════════════════════ */
+@media print {
+  body * { visibility: hidden; }
+  .rc-page, .rc-page * { visibility: visible; }
+
+  .rc-overlay {
+    position: static !important;
+    background: none !important;
+    display: block !important;
+    padding: 0 !important;
+  }
+  .rc-container {
+    position: static !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .rc-modal-header { display: none !important; }
+  .rc-modal-body {
+    background: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .rc-preview-wrapper {
+    display: block !important;
+    height: auto !important;
+  }
+  .rc-page {
+    /* Reset JS scale transform — browser handles A4 sizing */
+    transform: none !important;
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 12mm 13mm 10mm 13mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: avoid !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
+}
