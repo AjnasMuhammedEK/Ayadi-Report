@@ -463,3 +463,5 @@ const ReportCardModalC = ({ studentData, onClose }) => {
 };
 
 export default ReportCardModalC;
+
+

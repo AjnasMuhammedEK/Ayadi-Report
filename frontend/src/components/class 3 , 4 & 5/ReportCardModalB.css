@@ -564,3 +564,83 @@
   }
   @page { size: A4 portrait; margin: 0; }
 }
+
+/* =============================================
+   Mobile: Title on top line, buttons on next line (side by side)
+   ============================================= */
+@media (max-width: 640px) {
+
+  .rc-modal-header {
+    flex-direction: column;       /* title above buttons */
+    align-items: flex-start;      /* title left-aligned */
+    gap: 12px;                    /* space between title and buttons */
+    padding: 14px 16px;           /* comfortable padding */
+  }
+
+  .rc-modal-actions {
+    width: 100%;                  /* full width row for buttons */
+    flex-direction: row;          /* keep buttons horizontal */
+    justify-content: flex-end;    /* push to right side */
+    align-items: center;
+    gap: 10px;                    /* space between PDF and X */
+  }
+
+  .rc-btn-pdf,
+  .rc-btn-close {
+    font-size: 13px;              /* compact but readable */
+    padding: 8px 14px;            /* good tap size */
+    border-radius: 6px;
+    min-height: 36px;             /* better touch target */
+  }
+
+  /* Close button - only X, clear & tappable */
+  .rc-btn-close {
+    font-size: 18px;              /* bigger X symbol */
+    padding: 8px 12px;
+    min-width: 40px;
+    background: #ef4444;          /* red */
+    font-weight: bold;
+  }
+
+  .rc-btn-close:hover,
+  .rc-btn-close:active {
+    background: #dc2626;
+  }
+
+  /* Download button */
+  .rc-btn-pdf {
+    padding: 8px 16px;
+  }
+
+  /* Very small screens — extra compact */
+  @media (max-width: 360px) {
+    .rc-modal-actions {
+      justify-content: space-between;
+      gap: 8px;
+    }
+    
+    .rc-btn-pdf {
+      font-size: 12px;
+      padding: 7px 12px;
+    }
+    
+    .rc-btn-close {
+      font-size: 17px;
+      padding: 7px 10px;
+      min-width: 36px;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .rc-modal-title {
+    font-size: 16px;              /* slightly bigger title */
+    font-weight: 700;
+    width: 100%;                  /* full width */
+  }
+
+  .rc-btn-pdf,
+  .rc-btn-close {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* subtle shadow */
+  }
+}

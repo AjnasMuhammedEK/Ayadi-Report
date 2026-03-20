@@ -1,0 +1,569 @@
+/* ════════════════════════════════════════════════════
+   UNIQUE STYLES FOR MODAL A ONLY – prefix: rca-
+   No conflict with Modal B or C
+════════════════════════════════════════════════════ */
+
+.rca-vars {
+  --lft:          430;
+  --rgt:          330;
+  --gap:          9px;
+  --row-h:        26px;
+  --row-h-tall:   38px;
+  --hdr-h:        46px;
+  --lower-h:      30px;
+  --result-h:     38px;
+  --subj-w:       20.5%;
+  --sm-w-l:       9.3%;
+  --gr-w-l:       7.67%;
+  --sm-w-r:       14.65%;
+  --gr-w-r:       12.09%;
+  --border:       1px solid #222;
+  --font:         Arial, Helvetica, sans-serif;
+  --blue:         #1a3a8c;
+}
+
+/* Overlay & Container */
+.rca-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.rca-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+  width: 95vw;
+  max-width: 900px;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.rca-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-bottom: 1px solid #ddd;
+  background: #f5f5f5;
+  flex-shrink: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.rca-modal-title {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+}
+
+.rca-modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.rca-btn-pdf,
+.rca-btn-close {
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-family: var(--font);
+  font-weight: 600;
+}
+
+.rca-btn-pdf         { background: #2e7d32; color: #fff; }
+.rca-btn-pdf:hover   { background: #1b5e20; }
+.rca-btn-close       { background: #e53935; color: #fff; }
+.rca-btn-close:hover { background: #b71c1c; }
+
+/* Body & Preview */
+.rca-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #b0b0b0;
+  display: flex;
+  justify-content: center;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+.rca-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.rca-page {
+  background: #fff;
+  width: 794px;
+  min-height: 1123px;
+  padding: 3.52% 5.27% 2.27% 5.27%;
+  box-sizing: border-box;
+  font-family: var(--font);
+  font-size: 11px;
+  box-shadow: 0 2px 14px rgba(0,0,0,.35);
+  flex-shrink: 0;
+  position: relative;
+  transform-origin: top center;
+}
+
+/* School Header */
+.rca-school-header {
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 17%;
+}
+
+.rca-school-name {
+  font-family: 'Libre Baskerville', 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--blue);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.rca-school-affil {
+  font-size: 12px;
+  font-style: italic;
+  color: #111;
+  margin-top: 3px;
+}
+
+.rca-school-addr {
+  font-size: 12px;
+  color: #111;
+  margin-top: 1px;
+}
+
+.rca-annual-badge {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 26px;
+  border-radius: 4px;
+  margin-top: 9px;
+  text-transform: uppercase;
+}
+
+/* Student Details */
+.rca-details {
+  margin: 10px 0;
+  font-size: 11.5px;
+}
+
+.rca-detail-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+.rca-detail-multi { flex-wrap: nowrap; }
+
+.rca-detail-label {
+  white-space: nowrap;
+  font-weight: 400;
+  flex-shrink: 0;
+  color: #111;
+}
+
+.rca-detail-line {
+  border-bottom: 1.5px solid #333;
+  flex: 1;
+  min-width: 80px;
+  height: 17px;
+  display: inline-block;
+  line-height: 17px;
+  padding: 0 3px;
+  font-size: 11.5px;
+  color: #111;
+}
+
+.rca-detail-short { min-width: 70px;  flex: 0.55; }
+.rca-detail-long  { min-width: 130px; flex: 1.4;  }
+.rca-detail-mid   { margin-left: 8px; }
+
+/* Academic Area */
+.rca-academic-area { margin-top: 6px; }
+
+.rca-left-block  { flex: var(--lft); min-width: 0; overflow: hidden; }
+.rca-right-block { flex: var(--rgt); min-width: 0; overflow: hidden; }
+.rca-table-gap   { width: var(--gap); flex-shrink: 0; }
+
+/* Term Tabs */
+.rca-term-tabs-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0;
+}
+
+.rca-tab-left-inner {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  margin-left: -1%;
+}
+
+.rca-tab-subj-space {
+  width: var(--subj-w);
+  flex-shrink: 0;
+}
+
+.rca-tab-scores-area {
+  width: 55.8%;
+  margin-left: 1.8em;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.rca-tab-grade-space-l { flex: 1; }
+
+.rca-tab-right-inner {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.rca-tab-scores-area-r {
+  width: 87.9%;
+  margin-left: -2%;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.rca-tab-grade-space-r { flex: 1; }
+
+.rca-term-tab {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 18px;
+  border-radius: 6px 6px 0 0;
+  text-transform: uppercase;
+  position: relative;
+  bottom: -1px;
+  z-index: 2;
+  white-space: nowrap;
+  margin-right: 69%;
+}
+
+/* Tables */
+.rca-tables-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.rca-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 9px;
+  font-family: var(--font);
+}
+
+/* Column widths */
+.rca-left-block .rca-col-subj { width: var(--subj-w); }
+.rca-left-block .rca-col-sm   { width: var(--sm-w-l); }
+.rca-left-block .rca-col-gr   { width: var(--gr-w-l); }
+
+.rca-right-block .rca-col-sm  { width: var(--sm-w-r); }
+.rca-right-block .rca-col-gr  { width: var(--gr-w-r); }
+
+/* Table header */
+.rca-thead-row th.rca-th {
+  border: var(--border);
+  height: var(--hdr-h);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 1px;
+  word-break: break-word;
+  line-height: 1.25;
+  color: #111;
+  background: #fff;
+}
+
+.rca-th-subj { font-size: 9px !important; font-weight: 700 !important; }
+.rca-th-gr   { font-size: 8px  !important; }
+
+/* Table body rows */
+.rca-tr td.rca-td {
+  border: var(--border);
+  height: var(--row-h);
+  vertical-align: middle;
+  padding: 0 2px;
+  font-size: 9px;
+  color: #111;
+}
+
+.rca-tr-tall td.rca-td { height: var(--row-h-tall); }
+
+.rca-td-subj {
+  text-align: left;
+  padding-left: 4px !important;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.rca-td-c { text-align: center; }
+
+/* Grade column protection */
+.rca-col-gr,
+.rca-th-gr {
+  min-width: 50px !important;
+  width: var(--gr-w-l) !important;
+}
+
+/* Discipline + Remarks */
+.rca-lower-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 6px;
+}
+
+.rca-tr-lower td.rca-td {
+  height: var(--lower-h);
+  font-size: 9px;
+  border: var(--border);
+  vertical-align: middle;
+  padding: 0 5px;
+  color: #111;
+}
+
+.rca-td-lower-lbl {
+  font-weight: 700;
+  text-align: left;
+  padding-left: 4px !important;
+  white-space: nowrap;
+}
+
+/* Result */
+.rca-result-outer {
+  display: flex;
+  align-items: stretch;
+}
+
+.rca-result-left-space {
+  flex: var(--lft);
+  margin-left: -4%;
+}
+
+.rca-result-right-block {
+  flex: var(--rgt);
+  border-left: var(--border);
+  border-right: var(--border);
+  border-bottom: var(--border);
+  border-top: none;
+  height: var(--result-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.rca-result-badge {
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.rca-result-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* Principal + Seal */
+.rca-principal-area {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: 10px;
+  gap: 16px;
+  padding-right: 0;
+}
+
+.rca-seal-img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.rca-principal-block {
+  text-align: center;
+  font-family: var(--font);
+}
+
+.rca-principal-label {
+  font-weight: 700;
+  font-size: 11px;
+  color: #111;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.rca-signature-img {
+  width: 100px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 2px;
+}
+
+/* Print */
+@media print {
+  body * { visibility: hidden; }
+  .rca-page, .rca-page * { visibility: visible; }
+
+  .rca-overlay {
+    position: static !important;
+    background: none !important;
+    display: block !important;
+    padding: 0 !important;
+  }
+  .rca-container {
+    position: static !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .rca-modal-header { display: none !important; }
+  .rca-modal-body {
+    background: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .rca-preview-wrapper {
+    display: block !important;
+    height: auto !important;
+  }
+  .rca-page {
+    transform: none !important;
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 12mm 13mm 10mm 13mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    page-break-after: avoid !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
+}
+/* =============================================
+   Mobile: Title centered on top line,
+   Buttons centered on next line (side by side)
+   ============================================= */
+@media (max-width: 640px) {
+
+  .rca-modal-header {
+    flex-direction: column;          /* title above buttons */
+    align-items: center;             /* center everything vertically */
+    text-align: center;              /* center text */
+    gap: 14px;                       /* nice spacing between title & buttons */
+    padding: 16px 12px;              /* balanced padding on small screens */
+  }
+
+  .rca-modal-title {
+    font-size: 17px;                 /* slightly bigger for better visibility */
+    font-weight: 700;
+    width: 100%;                     /* full width for centering */
+    text-align: center;              /* force center alignment */
+  }
+
+  .rca-modal-actions {
+    width: 100%;                     /* full width row */
+    flex-direction: row;             /* buttons side by side */
+    justify-content: center;         /* CENTER the buttons horizontally */
+    align-items: center;
+    gap: 12px;                       /* comfortable space between buttons */
+    flex-wrap: nowrap;               /* prevent wrapping on small screens */
+  }
+
+  .rca-btn-pdf,
+  .rca-btn-close {
+    font-size: 13.5px;               /* compact but readable */
+    padding: 9px 16px;               /* good tap target size */
+    border-radius: 8px;
+    min-height: 38px;                /* finger-friendly */
+    min-width: 110px;                /* prevent too narrow buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Close button - prominent X */
+  .rca-btn-close {
+    font-size: 20px;                 /* bigger X symbol */
+    padding: 9px 14px;
+    min-width: 44px;
+    background: #ef4444;
+    font-weight: bold;
+  }
+
+  .rca-btn-close:hover,
+  .rca-btn-close:active {
+    background: #dc2626;
+  }
+
+  /* Download button */
+  .rca-btn-pdf {
+    padding: 9px 18px;
+  }
+
+  /* Very small screens — extra compact & centered */
+  @media (max-width: 360px) {
+    .rca-modal-actions {
+      gap: 10px;
+      justify-content: center;      /* still centered */
+    }
+
+    .rca-btn-pdf {
+      font-size: 12.5px;
+      padding: 8px 14px;
+      min-width: 100px;
+    }
+
+    .rca-btn-close {
+      font-size: 18px;
+      padding: 8px 12px;
+      min-width: 40px;
+    }
+  }
+}
