@@ -122,7 +122,14 @@ const Home = () => {
           <img src={schoolLogo} alt="Ayadi Glocal School" />
         </nav>
 
-
+        <header className="home-header">
+          <div className="badge">🏫 School Certificate Management System</div>
+          <h1>Access Student <span>Certificates</span></h1>
+          <p>
+            Please enter the student's academic details to securely
+            retrieve and download the official school certificate.
+          </p>
+        </header>
 
         <div className="home-card">
           <div className="form-group">
