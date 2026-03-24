@@ -1,6 +1,9 @@
 import express from 'express'
 import cors from 'cors'
+import dotenv from 'dotenv'
 import report from './routes/report.js'
+
+dotenv.config()
 
 const app = express()
 
@@ -9,4 +12,9 @@ app.use(express.json())
 
 app.use('/', report)
 
-app.listen(5000, () => console.log('Server Started at 5000'))
+// ✅ IMPORTANT (Render compatible)
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`)
+})

@@ -15,9 +15,7 @@ const getStudentsA = async (req, res) => {
     }
 
     // Fetch data from Google Sheet (public link via opensheet)
-    const response = await axios.get(
-      "https://opensheet.elk.sh/1Wa9EqhA_TGgDtqDrXUr0C9op8qL15q82_lPgzY1k7I8/sheet1"
-    );
+    const response = await axios.get(process.env.SHEET_A);
 
     const students = response.data;
 
@@ -210,9 +208,7 @@ const getStudentsB = async (req, res) => {
     const searchRoll  = String(roll).trim();
     const searchPhone = String(phone).trim();
 
-    const response = await axios.get(
-      "https://opensheet.elk.sh/14EVYRBaHCBaev0pNAR9dfbjLmx0fZhWMSzMaw7jXBCw/sheet1"
-    );
+    const response = await axios.get(process.env.SHEET_B);
 
     const students = response.data;
 
@@ -405,11 +401,7 @@ const getStudentsC = async (req, res) => {
 
     // Note: You are using the WRONG sheet ID here!
     // Previous classes used different sheets. For 6-8 it's a new one:
-    const response = await axios.get(
-      "https://opensheet.elk.sh/1Ar2v9_2PKRLuQ5wzN0ejT1zLDq3HuMMtwh5-6JSVy-U/sheet1"
-      // ↑ Change to the correct published link / elk.sh URL for THIS sheet
-      // If not published yet: Publish → CSV → then use opensheet.elk.sh link
-    );
+   const response = await axios.get(process.env.SHEET_C);
 
     const students = response.data;
 
