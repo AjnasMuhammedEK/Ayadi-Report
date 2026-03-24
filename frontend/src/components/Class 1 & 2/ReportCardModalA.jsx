@@ -146,53 +146,68 @@ const ReportCardModalA = ({ studentData, onClose }) => {
   }, []);
 
   const handleDownloadPDF = async () => {
-    const el = pageRef.current;
-    if (!el) return;
+  const el = pageRef.current;
+  if (!el) return;
 
-    setDlStatus('loading');
+  setDlStatus('loading');
 
-    const prevTransform = el.style.transform;
-    const prevTransformOrigin = el.style.transformOrigin;
+  const prevTransform = el.style.transform;
+  const prevTransformOrigin = el.style.transformOrigin;
+
+  try {
+    // Force clean state before capture
     el.style.transform = 'scale(1)';
     el.style.transformOrigin = 'top left';
-    el.style.setProperty('--border', '0.5px solid #222');
+    el.style.setProperty('--border', '1px solid #222');
 
-    try {
-      const canvas = await html2canvas(el, {
-        scale: 4,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        width: 794,
-        height: 1123,
-        imageTimeout: 0,
-        removeContainer: true,
-      });
+    const canvas = await html2canvas(el, {
+      scale: 3,                    // Best for mobile + quality
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: 794,
+      height: 1123,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: 794,
+      windowHeight: 1123,
+      imageTimeout: 2000,
+      removeContainer: true,
 
-      const imgData = canvas.toDataURL('image/png');
+      // Extra fixes for alignment & color
+      letterRendering: true,
+      foreignObjectRendering: false,
+      ignoreElements: (element) =>
+        element.classList.contains('rca-modal-header') ||
+        element.classList.contains('rc-modal-header'),
+    });
 
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true,
-      });
+    const imgData = canvas.toDataURL('image/png', 1.0);
 
-      pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
-      pdf.save(`ReportCard_${safe(sd.name) || 'Student'}.pdf`);
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true,
+    });
 
-      setDlStatus('success');
-      setTimeout(() => setDlStatus(null), 2000);
-    } catch (err) {
-      console.error(err);
-      setDlStatus(null);
-    } finally {
-      el.style.transform = prevTransform;
-      el.style.transformOrigin = prevTransformOrigin;
-      el.style.removeProperty('--border');
-    }
-  };
+    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+    pdf.save(`ReportCard_${safe(sd.name) || 'Student'}.pdf`);
+
+    setDlStatus('success');
+    setTimeout(() => setDlStatus(null), 2000);
+
+  } catch (err) {
+    console.error(err);
+    setDlStatus(null);
+    toast.error("Failed to generate PDF. Try again.");
+  } finally {
+    el.style.transform = prevTransform;
+    el.style.transformOrigin = prevTransformOrigin;
+    el.style.removeProperty('--border');
+  }
+};
 
   return (
     <>
