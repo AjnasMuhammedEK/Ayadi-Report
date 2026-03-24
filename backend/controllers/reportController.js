@@ -1,31 +1,34 @@
 import axios from 'axios';
  
-
+ 
 const getStudentsA = async (req, res) => {
   try {
     const { class: studentClass, roll, phone } = req.body;
 
-    // Normalize inputs
     const searchClass = String(studentClass || '').trim();
     const searchRoll  = String(roll || '').trim();
     const searchPhone = String(phone || '').trim();
 
     if (!searchClass || !searchRoll || !searchPhone) {
-      return res.status(400).json({ message: "Class, Roll Number and Phone Number are required." });
+      return res.status(400).json({ 
+        message: "Class, Roll Number and Phone Number are required." 
+      });
     }
 
-    // Fetch data from Google Sheet (public link via opensheet)
     const response = await axios.get(process.env.SHEET_A);
-
     const students = response.data;
 
-    // Find matching student - case insensitive + trim
+    if (!students || students.length === 0) {
+      return res.status(500).json({ message: "No data found in Google Sheet." });
+    }
+
+    // Find student - flexible matching for your exact headers
     const student = students.find((s) => {
-      return (
-        String(s["Grade"] || "").trim() === searchClass &&
-        String(s["Roll Number"] || "").trim() === searchRoll &&
-        String(s["Contact Number"] || "").trim() === searchPhone
-      );
+      const grade = String(s["4.Grade"] || s["4. Grade"] || s["Grade"] || "").trim();
+      const rno   = String(s["5.Roll Number"] || s["5. Roll Number"] || s["Roll Number"] || "").trim();
+      const ph    = String(s["8.Contact Number"] || s["8. Contact Number"] || s["Contact Number"] || "").trim();
+
+      return grade === searchClass && rno === searchRoll && ph === searchPhone;
     });
 
     if (!student) {
@@ -34,159 +37,157 @@ const getStudentsA = async (req, res) => {
       });
     }
 
-    // ───────────────────────────────────────────────────────────────
-    // Build clean, structured response object using REAL column names
-    // ───────────────────────────────────────────────────────────────
+    // ====================== FULL FORMATTED RESPONSE ======================
     const formattedData = {
-      name:        student["Student Name"]?.trim() || "",
-      fatherName:  student["Father's Name"]?.trim() || "",
-      motherName:  student["Mother's Name"]?.trim() || "",
-      class:       student["Grade"]?.trim() || "",
-      roll:        student["Roll Number"]?.trim() || "",
-      section:     student["Section"]?.trim() || "",
-      dob:         student["Date of Birth"]?.trim() || "",
-      phone:       student["Contact Number"]?.trim() || "",
-      result:      student["Result"]?.trim() || "",
+      name:        String(student["1.Name of the student"] || "").trim(),
+      fatherName:  String(student["2.Father's Name"] || "").trim(),
+      motherName:  String(student["3.Mother's Name"] || "").trim(),
+      class:       String(student["4.Grade"] || "").trim(),
+      roll:        String(student["5.Roll Number"] || "").trim(),
+      section:     String(student["6.Section (A,B,C ,D etc)"] || "").trim(),
+      dob:         String(student["7.Date of Birth"] || "").trim(),
+      phone:       String(student["8.Contact Number"] || "").trim(),
+      result:      String(student["108.Result"] || "").trim(),
 
       discipline: {
-        term1: student["Discipline"]?.trim() || "",
-        term2: student["Discipline"]?.trim() || "",   // same column for both terms
+        term1: String(student["104.Term 1 Discipline Grade"] || "").trim(),
+        term2: String(student["105.Term 2 Discipline Grade"] || "").trim(),
       },
 
       remarks: {
-        term1: student["Remarks"]?.trim() || "",
-        term2: student["Remarks"]?.trim() || "",     // same column
+        term1: String(student["106.Term 1 Remarks"] || "").trim(),
+        term2: String(student["107.Term 2 Remarks"] || "").trim(),
       },
 
       term1: {
         english: {
-          periodicTest: student["English T1 PT (5)"]?.trim() || "",
-          noteBook:     student["English T1 NB (5)"]?.trim() || "",
-          oralExam:     student["English T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["English T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["English T1 Out of 50"]?.trim() || "",
-          outOf100:     student["English T1 Out of 100"]?.trim() || "",
-          grade:        student["English T1 Grade"]?.trim() || "",
+          periodicTest: String(student["9.Term 1 English Periodic Test(5)"] || "").trim(),
+          noteBook:     String(student["10.Term 1 English Notebook (5)"] || "").trim(),
+          oralExam:     String(student["11.Term 1 English Oral Exam (10)"] || "").trim(),
+          term1:        String(student["12.Term 1 English Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["13.Term 1 English Out of (50)"] || "").trim(),
+          outOf100:     String(student["14.Term 1 English Out of (100)"] || "").trim(),
+          grade:        String(student["15. Term 1 English Grade"] || "").trim(),
         },
         malayalam: {
-          periodicTest: student["Malayalam T1 PT (5)"]?.trim() || "",
-          noteBook:     student["Malayalam T1 NB (5)"]?.trim() || "",
-          oralExam:     student["Malayalam T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["Malayalam T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Malayalam T1 Out of 50"]?.trim() || "",
-          outOf100:     student["Malayalam T1 Out of 100"]?.trim() || "",
-          grade:        student["Malayalam T1 Grade"]?.trim() || "",
+          periodicTest: String(student["16.Term 1 Malayalam Periodic Test(5)"] || "").trim(),
+          noteBook:     String(student["17.Term 1 Malayalam Notebook (5)"] || "").trim(),
+          oralExam:     String(student["18.Term 1 Malayalam Oral Exam (10)"] || "").trim(),
+          term1:        String(student["19.Term 1 Malayalam Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["20.Term 1 Malayalam Out of (50)"] || "").trim(),
+          outOf100:     String(student["21.Term 1 Malayalam Out of (100)"] || "").trim(),
+          grade:        String(student["22.Term 1 Malayalam Grade"] || "").trim(),
         },
         hindi: {
-          periodicTest: student["Hindi T1 PT (5)"]?.trim() || "",
-          noteBook:     student["Hindi T1 NB (5)"]?.trim() || "",
-          oralExam:     student["Hindi T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["Hindi T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Hindi T1 Out of 50"]?.trim() || "",
-          outOf100:     student["Hindi T1 Out of 100"]?.trim() || "",
-          grade:        student["Hindi T1 Grade"]?.trim() || "",
+          periodicTest: String(student["23.Term 1 Hindi Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["24. Term 1 Hindi Notebook (5) "] || "").trim(),
+          oralExam:     String(student["25. Term 1 Hindi Oral Exam (10) "] || "").trim(),
+          term1:        String(student["26. Term 1 Hindi Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["27. Term 1 Hindi Out of (50)"] || "").trim(),
+          outOf100:     String(student["28. Term 1 Hindi Out of (100)"] || "").trim(),
+          grade:        String(student["29.Term 1 Hindi Grade"] || "").trim(),
         },
         mathematics: {
-          periodicTest: student["Mathematics T1 PT (5)"]?.trim() || "",
-          noteBook:     student["Mathematics T1 NB (5)"]?.trim() || "",
-          oralExam:     student["Mathematics T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["Mathematics T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Mathematics T1 Out of 50"]?.trim() || "",
-          outOf100:     student["Mathematics T1 Out of 100"]?.trim() || "",
-          grade:        student["Mathematics T1 Grade"]?.trim() || "",
+          periodicTest: String(student["30. Term 1 Mathematics Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["31. Term 1 Mathematics Notebook (5) "] || "").trim(),
+          oralExam:     String(student["32. Term 1 Mathematics Oral Exam (10) "] || "").trim(),
+          term1:        String(student["33. Term 1 Mathematics Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["34.Term 1 Mathematics Out of (50)"] || "").trim(),
+          outOf100:     String(student["35. Term 1 Mathematics Out of (100)"] || "").trim(),
+          grade:        String(student["36.Term 1 Mathematics Grade"] || "").trim(),
         },
         evs: {
-          periodicTest: student["EVS T1 PT (5)"]?.trim() || "",
-          noteBook:     student["EVS T1 NB (5)"]?.trim() || "",
-          oralExam:     student["EVS T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["EVS T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["EVS T1 Out of 50"]?.trim() || "",
-          outOf100:     student["EVS T1 Out of 100"]?.trim() || "",
-          grade:        student["EVS T1 Grade"]?.trim() || "",
+          periodicTest: String(student["37. Term 1 EVS Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["38. Term 1 EVS Notebook (5) "] || "").trim(),
+          oralExam:     String(student["39. Term 1 EVS Oral Exam (10) "] || "").trim(),
+          term1:        String(student["40. Term 1 EVS Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["40. Term 1 EVS  Exam Out of (50)"] || "").trim(),
+          outOf100:     String(student["41.Term 1 EVS  Exam Out of (100)"] || "").trim(),
+          grade:        String(student["42.Term 1 EVS  Grade"] || "").trim(),
         },
         valueeducation: {
-          periodicTest: student["Value Education T1 PT (5)"]?.trim() || "",
-          noteBook:     student["Value Education T1 NB (5)"]?.trim() || "",
-          oralExam:     student["Value Education T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["Value Education T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Value Education T1 Out of 50"]?.trim() || "",
-          outOf100:     student["Value Education T1 Out of 100"]?.trim() || "",
-          grade:        student["Value Education T1 Grade"]?.trim() || "",
+          periodicTest: String(student["43. Term 1 Value Education Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["44. Term 1 Value Education Notebook (5) "] || "").trim(),
+          oralExam:     String(student["45. Term 1 Value Education Oral Exam (10) "] || "").trim(),
+          term1:        String(student["46. Term 1 Value Education Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["47.Term 1 Value Education Out of (50) "] || "").trim(),
+          outOf100:     String(student["47.Term 1 Value Education Out of (100)"] || "").trim(),
+          grade:        String(student["48.Term 1 Value Education Grade"] || "").trim(),
         },
         it: {
-          periodicTest: student["IT T1 PT (5)"]?.trim() || "",
-          noteBook:     student["IT T1 NB (5)"]?.trim() || "",
-          oralExam:     student["IT T1 Oral Exam (10)"]?.trim() || "",
-          term1:        student["IT T1 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["IT T1 Out of 50"]?.trim() || "",
-          outOf100:     student["IT T1 Out of 100"]?.trim() || "",
-          grade:        student["IT T1 Grade"]?.trim() || "",
+          periodicTest: String(student["49. Term 1 IT Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["50. Term 1 IT Notebook (5) "] || "").trim(),
+          oralExam:     String(student["51. Term 1 IT Oral Exam (10) "] || "").trim(),
+          term1:        String(student["52. Term 1 IT Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["53. Term 1 IT Out of (50) "] || "").trim(),
+          outOf100:     String(student["54. Term 1 IT Out of (100)"] || "").trim(),
+          grade:        String(student["55. Term 1 IT Grade"] || "").trim(),
         },
       },
 
       term2: {
         english: {
-          periodicTest: student["English T2 PT (5)"]?.trim() || "",
-          noteBook:     student["English T2 NB (5)"]?.trim() || "",
-          oralExam:     student["English T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["English T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["English T2 Out of 50"]?.trim() || "",
-          outOf100:     student["English T2 Out of 100"]?.trim() || "",
-          grade:        student["English T2 Grade"]?.trim() || "",
+          periodicTest: String(student["55. Term 2 English Periodic Test(5)"] || "").trim(),
+          noteBook:     String(student["56. Term 2 English Notebook (5)"] || "").trim(),
+          oralExam:     String(student["57. Term 2 English Oral Exam (10)"] || "").trim(),
+          term2:        String(student["58. Term 2 English Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["59. Term 2 English Out of (50)"] || "").trim(),
+          outOf100:     String(student["60. Term 2 English Out of (100)"] || "").trim(),
+          grade:        String(student["61. Term 2 English Grade"] || "").trim(),
         },
         malayalam: {
-          periodicTest: student["Malayalam T2 PT (5)"]?.trim() || "",
-          noteBook:     student["Malayalam T2 NB (5)"]?.trim() || "",
-          oralExam:     student["Malayalam T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["Malayalam T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Malayalam T2 Out of 50"]?.trim() || "",
-          outOf100:     student["Malayalam T2 Out of 100"]?.trim() || "",
-          grade:        student["Malayalam T2 Grade"]?.trim() || "",
+          periodicTest: String(student["62.Term 2 Malayalam Periodic Test(5)"] || "").trim(),
+          noteBook:     String(student["63.Term 2 Malayalam Notebook (5)"] || "").trim(),
+          oralExam:     String(student["64. Term 2 Malayalam Oral Exam (10)"] || "").trim(),
+          term2:        String(student["65.Term 2 Malayalam Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["66.Term 2 Malayalam out of (50)"] || "").trim(),
+          outOf100:     String(student["67.Term 2 Malayalam Out of (100)"] || "").trim(),
+          grade:        String(student["68.Term 2 Malayalam Grade"] || "").trim(),
         },
         hindi: {
-          periodicTest: student["Hindi T2 PT (5)"]?.trim() || "",
-          noteBook:     student["Hindi T2 NB (5)"]?.trim() || "",
-          oralExam:     student["Hindi T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["Hindi T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Hindi T2 Out of 50"]?.trim() || "",
-          outOf100:     student["Hindi T2 Out of 100"]?.trim() || "",
-          grade:        student["Hindi T2 Grade"]?.trim() || "",
+          periodicTest: String(student["69.Term 2 Hindi Periodic Test(5)"] || "").trim(),
+          noteBook:     String(student["70.Term 2 Hindi Note book (5)"] || "").trim(),
+          oralExam:     String(student["71.Term 2 Hindi Oral exam(10)"] || "").trim(),
+          term2:        String(student["72.Term 2 Hindi Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["73.Term 2 Hindi out of (50)"] || "").trim(),
+          outOf100:     String(student["74.Term 2 Hindi Out of (100)"] || "").trim(),
+          grade:        String(student["75.Term 2 Hindi Grade"] || "").trim(),
         },
         mathematics: {
-          periodicTest: student["Mathematics T2 PT (5)"]?.trim() || "",
-          noteBook:     student["Mathematics T2 NB (5)"]?.trim() || "",
-          oralExam:     student["Mathematics T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["Mathematics T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Mathematics T2 Out of 50"]?.trim() || "",
-          outOf100:     student["Mathematics T2 Out of 100"]?.trim() || "",
-          grade:        student["Mathematics T2 Grade"]?.trim() || "",
+          periodicTest: String(student["76. Term 2 Mathematics Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["77.Term 2 Mathematics Notebook (5) "] || "").trim(),
+          oralExam:     String(student["78. Term 2 Mathematics Oral Exam (10)"] || "").trim(),
+          term2:        String(student["79. Term 2 Mathematics Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["80. Term 2 Mathematics Out of (50)"] || "").trim(),
+          outOf100:     String(student["81.  Term 2 Mathematics Out of (100)   "] || "").trim(),
+          grade:        String(student["82. Term 2 Mathematics Grade"] || "").trim(),
         },
         evs: {
-          periodicTest: student["EVS T2 PT (5)"]?.trim() || "",
-          noteBook:     student["EVS T2 NB (5)"]?.trim() || "",
-          oralExam:     student["EVS T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["EVS T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["EVS T2 Out of 50"]?.trim() || "",
-          outOf100:     student["EVS T2 Out of 100"]?.trim() || "",
-          grade:        student["EVS T2 Grade"]?.trim() || "",
+          periodicTest: String(student["83. Term 2 EVS Periodic Test (5) "] || "").trim(),
+          noteBook:     String(student["84. Term 2 EVS Notebook (5) "] || "").trim(),
+          oralExam:     String(student["85. Term 2 EVS Oral Exam (10) "] || "").trim(),
+          term2:        String(student["86. Term 2 EVS Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["87.Term 2 EVS Out of (50)"] || "").trim(),
+          outOf100:     String(student["88.Term 2 EVS Out of (100) "] || "").trim(),
+          grade:        String(student["89. Term 2 EVS Grade "] || "").trim(),
         },
         valueeducation: {
-          periodicTest: student["Value Education T2 PT (5)"]?.trim() || "",
-          noteBook:     student["Value Education T2 NB (5)"]?.trim() || "",
-          oralExam:     student["Value Education T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["Value Education T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["Value Education T2 Out of 50"]?.trim() || "",
-          outOf100:     student["Value Education T2 Out of 100"]?.trim() || "",
-          grade:        student["Value Education T2 Grade"]?.trim() || "",
+          periodicTest: String(student["90. Term 2 Value Education Periodic Test (5)"] || "").trim(),
+          noteBook:     String(student["91. Term 2 Value Education Notebook (5)"] || "").trim(),
+          oralExam:     String(student["92.Term 2 Value Education Oral Exam (10)"] || "").trim(),
+          term2:        String(student["93. Term 2 Value Education Term Exam (30) "] || "").trim(),
+          outOf50:      String(student["94. Term 2 Value Education Out of (50) "] || "").trim(),
+          outOf100:     String(student["95. Term 2 Value Education Out of (100) "] || "").trim(),
+          grade:        String(student["96. Term 2 Value Education Grade"] || "").trim(),
         },
         it: {
-          periodicTest: student["IT T2 PT (5)"]?.trim() || "",
-          noteBook:     student["IT T2 NB (5)"]?.trim() || "",
-          oralExam:     student["IT T2 Oral Exam (10)"]?.trim() || "",
-          term2:        student["IT T2 Term Exam (30)"]?.trim() || "",
-          outOf50:      student["IT T2 Out of 50"]?.trim() || "",
-          outOf100:     student["IT T2 Out of 100"]?.trim() || "",
-          grade:        student["IT T2 Grade"]?.trim() || "",
+          periodicTest: String(student["97. Term 2 IT Periodic Test (5)"] || "").trim(),
+          noteBook:     String(student["98. Term 2 IT Notebook (5) "] || "").trim(),
+          oralExam:     String(student["99. Term 2 IT Oral Exam (10) "] || "").trim(),
+          term2:        String(student["100. Term 2 IT Term Exam (30)"] || "").trim(),
+          outOf50:      String(student["101. Term 2 IT Out of (50) "] || "").trim(),
+          outOf100:     String(student["102. Term 2 IT Out of (100) "] || "").trim(),
+          grade:        String(student["103. Term 2 IT Grade"] || "").trim(),
         },
       },
     };
@@ -198,6 +199,7 @@ const getStudentsA = async (req, res) => {
     return res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+ 
  
 // getStudentsB controller (rename function if needed)
 const getStudentsB = async (req, res) => {
