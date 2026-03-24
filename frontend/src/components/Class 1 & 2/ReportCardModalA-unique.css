@@ -567,77 +567,59 @@
     }
   }
 }
-
-/* ====================== PDF FIXES (Safe Version) ====================== */
-.rca-page,
-.rc-page {
-  color: #111 !important;
-  -webkit-text-fill-color: #111 !important;
+/* ====================== PDF FIXES - BEST FINAL VERSION ====================== */
+.rca-page {
   background: #ffffff !important;
-  width: 794px !important;
-  min-height: 1123px !important;
-  box-sizing: border-box !important;
-  margin: 0 auto !important;
-  font-family: Arial, Helvetica, sans-serif !important;
-  line-height: 1.25 !important;
 }
 
-/* Force black text ONLY on normal text, NOT on dark background elements */
-.rca-page .rca-school-name,
-.rc-page .rc-school-name,
+/* Force black text on all normal content (this fixes blue text) */
+.rca-page .rca-details *,
+.rca-page .rca-table td,
+.rca-page .rca-table th,
+.rca-page .rca-td-subj,
+.rca-page .rca-detail-label,
+.rca-page .rca-detail-line,
+.rca-page .rca-principal-label,
+.rca-page .rca-school-affil,
+.rca-page .rca-school-addr {
+  color: #111 !important;
+  -webkit-text-fill-color: #111 !important;
+}
+
+/* Keep white text on dark backgrounds */
 .rca-page .rca-annual-badge,
-.rc-page .rc-annual-badge,
 .rca-page .rca-term-tab,
-.rc-page .rc-term-tab,
 .rca-page .rca-result-badge,
-.rc-page .rc-result-badge,
-.rca-page .rca-result-val,
-.rc-page .rc-result-val {
-  color: #ffffff !important;           /* Keep white text white */
+.rca-page .rca-result-val {
+  color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Black text for all normal content */
-.rca-details *,
-.rc-details *,
-.rca-table td,
-.rc-table td,
-.rca-table th,
-.rc-table th,
-.rca-td-subj,
-.rc-td-subj,
-.rca-principal-label,
-.rc-principal-label {
-  color: #111 !important;
-  -webkit-text-fill-color: #111 !important;
+/* School name - Keep original blue */
+.rca-page .rca-school-name {
+  color: #1a3a8c !important;
+  -webkit-text-fill-color: #1a3a8c !important;
 }
 
-/* Stronger table alignment fix */
-.rca-table,
-.rc-table {
+/* Table alignment & stability fixes */
+.rca-page .rca-table {
   table-layout: fixed !important;
   border-collapse: collapse !important;
   width: 100% !important;
 }
 
-.rca-table td,
-.rc-table td,
-.rca-table th,
-.rc-table th {
+.rca-page .rca-table td,
+.rca-page .rca-table th {
   box-sizing: border-box !important;
-  padding: 0 2px !important;
   vertical-align: middle !important;
   word-break: break-word !important;
 }
 
-/* Fix subject column */
-.rca-left-block .rca-col-subj,
-.rc-left-block .col-subj {
+.rca-left-block .rca-col-subj {
   width: var(--subj-w) !important;
 }
 
-.rca-td-subj,
-.rc-td-subj {
+.rca-td-subj {
   text-align: left !important;
   padding-left: 4px !important;
 }
