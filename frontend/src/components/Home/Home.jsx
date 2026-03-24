@@ -47,7 +47,7 @@ const Home = () => {
         // ✅ Start loading
         setIsLoading(true);
 
-        const BASE_URL = "http://localhost:5000";
+        const BASE_URL = "https://ayadi-report-backend.onrender.com";
         let apiUrl = "";
 
         // ✅ SELECT API BASED ON CLASS
