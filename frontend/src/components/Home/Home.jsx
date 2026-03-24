@@ -36,7 +36,6 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [studentData, setStudentData] = useState(null);
 
-  // ✅ NEW loading state
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -44,13 +43,11 @@ const Home = () => {
 
     const fetchStudent = async () => {
       try {
-        // ✅ Start loading
         setIsLoading(true);
 
         const BASE_URL = "https://ayadi-report-backend.onrender.com";
         let apiUrl = "";
 
-        // ✅ SELECT API BASED ON CLASS
         if (section === "1" || section === "2") {
           apiUrl = `${BASE_URL}/getStudentsA`;
         } 
@@ -85,7 +82,6 @@ const Home = () => {
         console.error(error);
         toast.error("Server error. Try again later.");
       } finally {
-        // ✅ Stop loading in all cases
         setIsLoading(false);
         setTriggerFetch(false);
       }
@@ -94,6 +90,7 @@ const Home = () => {
     fetchStudent();
   }, [triggerFetch, section, rollNumber, phoneNumber]);
 
+  // ==================== UPDATED PHONE VALIDATION ====================
   const handleSubmit = () => {
     const trimmedRoll = rollNumber.trim();
     const trimmedPhone = phoneNumber.trim();
@@ -101,11 +98,17 @@ const Home = () => {
     if (!section) return toast.error("Please select the class / section.");
     if (!trimmedRoll) return toast.error("Please enter the roll number.");
     if (!trimmedPhone) return toast.error("Please enter the phone number.");
-    if (!/^[0-9]{10}$/.test(trimmedPhone)) {
-      return toast.error("Phone number must be exactly 10 digits.");
+
+    // Supports:
+    // - Indian 10-digit numbers (e.g. 9876543210)
+    // - UAE numbers with +971, 00971, or 971 (9 to 12 digits total)
+    const phoneRegex = /^(\+971|00971|971)?[0-9]{9,12}$/;
+
+    if (!phoneRegex.test(trimmedPhone.replace(/\s+/g, ''))) {   // remove spaces if any
+      return toast.error("Please enter a valid Indian or UAE phone number");
     }
 
-    // Optional: clear old data before new fetch
+    // Clear old data before new fetch
     setStudentData(null);
     setShowModal(false);
 
@@ -179,10 +182,10 @@ const Home = () => {
               <input
                 type="tel"
                 className="form-control"
-                placeholder="e.g. 9876543210"
+                placeholder="e.g. 9876543210 or +971501234567 "
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                maxLength={10}
+                maxLength={15}           
                 disabled={isLoading}
               />
             </div>
@@ -205,7 +208,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ✅ Optional full-screen small loading overlay */}
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-box">
@@ -219,7 +221,6 @@ const Home = () => {
         <div className="modal-overlay">
           <div className="modal-box">
 
-            {/* CLASS 1-2 */}
             {(section === "1" || section === "2") && (
               <ReportCardModal
                 studentData={studentData}
@@ -227,7 +228,6 @@ const Home = () => {
               />
             )}
 
-            {/* CLASS 3-5 */}
             {(section === "3" || section === "4" || section === "5") && (
               <ReportCardThreeFive
                 studentData={studentData}
@@ -235,7 +235,6 @@ const Home = () => {
               />
             )}
 
-            {/* CLASS 6-8 */}
             {(section === "6" || section === "7" || section === "8") && (
               <ReportCardSixEight
                 studentData={studentData}
