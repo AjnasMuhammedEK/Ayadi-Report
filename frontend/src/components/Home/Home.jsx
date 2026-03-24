@@ -99,13 +99,11 @@ const Home = () => {
     if (!trimmedRoll) return toast.error("Please enter the roll number.");
     if (!trimmedPhone) return toast.error("Please enter the phone number.");
 
-    // Supports:
-    // - Indian 10-digit numbers (e.g. 9876543210)
-    // - UAE numbers with +971, 00971, or 971 (9 to 12 digits total)
-    const phoneRegex = /^(\+971|00971|971)?[0-9]{9,12}$/;
+    // ✅ Only allow digits and +
+    const phoneRegex = /^[0-9+]+$/;
 
-    if (!phoneRegex.test(trimmedPhone.replace(/\s+/g, ''))) {   // remove spaces if any
-      return toast.error("Please enter a valid Indian or UAE phone number");
+    if (!phoneRegex.test(trimmedPhone)) {
+      return toast.error("Phone number can only contain numbers and +");
     }
 
     // Clear old data before new fetch
