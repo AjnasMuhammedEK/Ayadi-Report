@@ -5,6 +5,8 @@ import signatureImg from '../../assets/principal_signature.png';
 import lowerTable from '../../assets/lowerTable.png';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';   // ← Add this import at the top
+
 
 /* ─────────────────────────────────────────────────────
    SUBJECTS (7 rows)
@@ -145,7 +147,8 @@ const ReportCardModalA = ({ studentData, onClose }) => {
     };
   }, []);
 
-  const handleDownloadPDF = async () => {
+
+const handleDownloadPDF = async () => {
   const el = pageRef.current;
   if (!el) return;
 
@@ -155,13 +158,11 @@ const ReportCardModalA = ({ studentData, onClose }) => {
   const prevTransformOrigin = el.style.transformOrigin;
 
   try {
-    // Force clean state before capture
     el.style.transform = 'scale(1)';
     el.style.transformOrigin = 'top left';
-    el.style.setProperty('--border', '1px solid #222');
 
     const canvas = await html2canvas(el, {
-      scale: 3,                    // Best for mobile + quality
+      scale: 1.8,                    // Balanced for mobile
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -170,20 +171,11 @@ const ReportCardModalA = ({ studentData, onClose }) => {
       height: 1123,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: 794,
-      windowHeight: 1123,
-      imageTimeout: 2000,
+      imageTimeout: 5000,
       removeContainer: true,
-
-      // Extra fixes for alignment & color
-      letterRendering: true,
-      foreignObjectRendering: false,
-      ignoreElements: (element) =>
-        element.classList.contains('rca-modal-header') ||
-        element.classList.contains('rc-modal-header'),
     });
 
-    const imgData = canvas.toDataURL('image/png', 1.0);
+    const imgData = canvas.toDataURL('image/png', 0.95);
 
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -192,20 +184,22 @@ const ReportCardModalA = ({ studentData, onClose }) => {
       compress: true,
     });
 
-    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
-    pdf.save(`ReportCard_${safe(sd.name) || 'Student'}.pdf`);
+    pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+
+    // Better way for mobile
+    const pdfBlob = pdf.output('blob');
+    saveAs(pdfBlob, `ReportCard_${safe(sd.name) || 'Student'}.pdf`);
 
     setDlStatus('success');
     setTimeout(() => setDlStatus(null), 2000);
 
   } catch (err) {
-    console.error(err);
+    console.error("PDF Error:", err);
     setDlStatus(null);
-    toast.error("Failed to generate PDF. Try again.");
+    toast.error("Failed to generate PDF on this device. Try on laptop.");
   } finally {
     el.style.transform = prevTransform;
     el.style.transformOrigin = prevTransformOrigin;
-    el.style.removeProperty('--border');
   }
 };
 
