@@ -91,27 +91,25 @@ const Home = () => {
   }, [triggerFetch, section, rollNumber, phoneNumber]);
 
   // ==================== UPDATED PHONE VALIDATION ====================
-  const handleSubmit = () => {
-    const trimmedRoll = rollNumber.trim();
-    const trimmedPhone = phoneNumber.trim();
+const handleSubmit = () => {
+  const trimmedRoll = rollNumber.trim();
+  const trimmedPhone = phoneNumber.trim();
 
-    if (!section) return toast.error("Please select the class / section.");
-    if (!trimmedRoll) return toast.error("Please enter the roll number.");
-    if (!trimmedPhone) return toast.error("Please enter the phone number.");
+  if (!section) return toast.error("Please select the class / section.");
+  if (!trimmedRoll) return toast.error("Please enter the roll number.");
+  if (!trimmedPhone) return toast.error("Please enter the phone number.");
 
-    // ✅ Only allow digits and +
-    const phoneRegex = /^[0-9+]+$/;
+  // ✅ Allow everything EXCEPT alphabets
+  const phoneRegex = /^[^a-zA-Z]+$/;
 
-    if (!phoneRegex.test(trimmedPhone)) {
-      return toast.error("Phone number can only contain numbers and +");
-    }
+  if (!phoneRegex.test(trimmedPhone)) {
+    return toast.error("Alphabets are not allowed");
+  }
 
-    // Clear old data before new fetch
-    setStudentData(null);
-    setShowModal(false);
-
-    setTriggerFetch(true);
-  };
+  setStudentData(null);
+  setShowModal(false);
+  setTriggerFetch(true);
+};
 
   return (
     <>
