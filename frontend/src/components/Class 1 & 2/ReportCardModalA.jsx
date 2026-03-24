@@ -5,7 +5,7 @@ import signatureImg from '../../assets/principal_signature.png';
 import lowerTable from '../../assets/lowerTable.png';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { saveAs } from 'file-saver';   // ← Add this import at the top
+ import { saveAs } from 'file-saver';   // ← Add this import at the top
 
 
 /* ─────────────────────────────────────────────────────
@@ -154,20 +154,25 @@ const handleDownloadPDF = async () => {
 
   setDlStatus('loading');
 
+  const prevTransform = el.style.transform;
+  const prevTransformOrigin = el.style.transformOrigin;
+
   try {
-    // Reset scale
     el.style.transform = 'scale(1)';
     el.style.transformOrigin = 'top left';
 
     const canvas = await html2canvas(el, {
-      scale: 2.0,
+      scale: 1.8,                    // Balanced for mobile
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       logging: false,
       width: 794,
       height: 1123,
-      imageTimeout: 8000,
+      scrollX: 0,
+      scrollY: 0,
+      imageTimeout: 5000,
+      removeContainer: true,
     });
 
     const imgData = canvas.toDataURL('image/png', 0.95);
@@ -181,12 +186,9 @@ const handleDownloadPDF = async () => {
 
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
 
-    // This is the key part for phones
+    // Better way for mobile
     const pdfBlob = pdf.output('blob');
-    const fileName = `ReportCard_${safe(sd.name) || 'Student'}.pdf`;
-
-    // Force download with Save As dialog on mobile
-    saveAs(pdfBlob, fileName);
+    saveAs(pdfBlob, `ReportCard_${safe(sd.name) || 'Student'}.pdf`);
 
     setDlStatus('success');
     setTimeout(() => setDlStatus(null), 2000);
@@ -194,7 +196,10 @@ const handleDownloadPDF = async () => {
   } catch (err) {
     console.error("PDF Error:", err);
     setDlStatus(null);
-    toast.error("Could not generate PDF. Please try on laptop.");
+    toast.error("Failed to generate PDF on this device. Try on laptop.");
+  } finally {
+    el.style.transform = prevTransform;
+    el.style.transformOrigin = prevTransformOrigin;
   }
 };
 
