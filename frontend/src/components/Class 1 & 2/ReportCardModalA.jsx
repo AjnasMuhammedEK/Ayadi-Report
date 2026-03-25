@@ -19,6 +19,7 @@ const SUBJECTS = [
   { label: 'EVS',              key: 'evs',            wrap: false },
   { label: 'VALUE\nEDUCATION', key: 'valueeducation', wrap: true  },
   { label: 'IT',               key: 'it',             wrap: false },
+  
 ];
 
 const safe = (v) => (v !== undefined && v !== null && v !== '') ? v : '';
@@ -162,7 +163,7 @@ const handleDownloadPDF = async () => {
     el.style.transformOrigin = 'top left';
 
     const canvas = await html2canvas(el, {
-      scale: 1.8,                    // Balanced for mobile
+      scale: 4,                    // Balanced for mobile
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -393,48 +394,49 @@ const handleDownloadPDF = async () => {
                   </div>
 
                   {/* DISCIPLINE + REMARKS */}
-                  <div className="rca-lower-row">
-                    <div className="rca-left-block">
-                      <table className="rca-table">
-                        <colgroup>
-                          <col style={{ width: '21%' }} />
-                          <col />
-                        </colgroup>
-                        <tbody>
-                          <tr className="rca-tr-lower">
-                            <td className="rca-td rca-td-lower-lbl">DISCIPLINE</td>
-                            <td className="rca-td">{safe(sd.discipline?.term1)}</td>
-                          </tr>
-                          <tr className="rca-tr-lower">
-                            <td className="rca-td rca-td-lower-lbl">REMARKS</td>
-                            <td className="rca-td">{safe(sd.remarks?.term1)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+ {/* DISCIPLINE + REMARKS */}
+<div className="rca-lower-row">
+  <div className="rca-left-block">
+    <table className="rca-table">
+      <colgroup>
+        <col style={{ width: '21%' }} />
+        <col />
+      </colgroup>
+      <tbody>
+        <tr className="rca-tr-lower">
+          <td className="rca-td rca-td-lower-lbl">DISCIPLINE</td>
+          <td className="rca-td rca-td-center">{safe(sd.discipline?.term1)}</td>
+        </tr>
+        <tr className="rca-tr-lower">
+          <td className="rca-td rca-td-lower-lbl ">REMARKS</td>
+          <td className="rca-td rca-td-center">{safe(sd.remarks?.term1)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-                    <div className="rca-table-gap" />
+  <div className="rca-table-gap" />
 
-                    <div className="rca-right-block">
-                      <table className="rca-table">
-                        <tbody>
-                          <tr className="rca-tr-lower">
-                            <td className="rca-td">{safe(sd.discipline?.term2)}</td>
-                          </tr>
-                          <tr className="rca-tr-lower">
-                            <td className="rca-td">{safe(sd.remarks?.term2)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+  <div className="rca-right-block">
+    <table className="rca-table">
+      <tbody>
+        <tr className="rca-tr-lower">
+          <td className="rca-td rca-td-center">{safe(sd.discipline?.term2)}</td>
+        </tr>
+        <tr className="rca-tr-lower">
+          <td className="rca-td rca-td-center">{safe(sd.remarks?.term2)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
                   {/* RESULT */}
                   <div className="rca-result-outer">
                     <div className="rca-result-left-space" />
                     <span className="rca-result-badge">RESULT</span>
                     <div className="rca-result-right-block">
-                      <span className="rca-result-val">{safe(sd.result)}</span>
+                      <span className="rca-result-val-res">{safe(sd.result)}</span>
                     </div>
                   </div>
 

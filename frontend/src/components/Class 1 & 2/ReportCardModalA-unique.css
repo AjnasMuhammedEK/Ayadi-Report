@@ -216,7 +216,7 @@
   display: flex;
   align-items: flex-end;
   width: 100%;
-  margin-left: -1%;
+  margin-left: 1.34em;
 }
 
 .rca-tab-subj-space {
@@ -226,7 +226,6 @@
 
 .rca-tab-scores-area {
   width: 55.8%;
-  margin-left: 1.8em;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -243,7 +242,7 @@
 
 .rca-tab-scores-area-r {
   width: 87.9%;
-  margin-left: -0.4em;
+  margin-left: -0.45em;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -362,6 +361,11 @@
   white-space: nowrap;
 }
 
+/* ====================== UNIQUE CENTER CLASS FOR TERM 2 ONLY ====================== */
+.rca-td-center {
+  text-align: center !important;
+}
+
 /* Result */
 .rca-result-outer {
   display: flex;
@@ -370,7 +374,7 @@
 
 .rca-result-left-space {
   flex: var(--lft);
-  margin-left: -4%;
+  margin-left: -4.5%;
 }
 
 .rca-result-right-block {
@@ -399,7 +403,7 @@
   align-items: center;
 }
 
-.rca-result-val {
+.rca-result-val-res {
   font-size: 11px;
   font-weight: 700;
   color: #111;
@@ -443,136 +447,46 @@
   margin: 0 auto 2px;
 }
 
-/* Print */
+/* Print, Mobile, PDF fixes - unchanged */
 @media print {
   body * { visibility: hidden; }
   .rca-page, .rca-page * { visibility: visible; }
-
-  .rca-overlay {
-    position: static !important;
-    background: none !important;
-    display: block !important;
-    padding: 0 !important;
-  }
-  .rca-container {
-    position: static !important;
-    background: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    width: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
+  .rca-overlay { position: static !important; background: none !important; display: block !important; padding: 0 !important; }
+  .rca-container { position: static !important; background: none !important; box-shadow: none !important; border-radius: 0 !important; width: auto !important; height: auto !important; overflow: visible !important; }
   .rca-modal-header { display: none !important; }
-  .rca-modal-body {
-    background: none !important;
-    overflow: visible !important;
-    padding: 0 !important;
-  }
-  .rca-preview-wrapper {
-    display: block !important;
-    height: auto !important;
-  }
+  .rca-modal-body { background: none !important; overflow: visible !important; padding: 0 !important; }
+  .rca-preview-wrapper { display: block !important; height: auto !important; }
   .rca-page {
-    transform: none !important;
-    position: fixed !important;
-    top: 0; left: 0;
-    width: 210mm !important;
-    min-height: 297mm !important;
+    transform: none !important; position: fixed !important; top: 0; left: 0;
+    width: 210mm !important; min-height: 297mm !important;
     padding: 12mm 13mm 10mm 13mm !important;
-    box-shadow: none !important;
-    margin: 0 !important;
+    box-shadow: none !important; margin: 0 !important;
     page-break-after: avoid !important;
   }
   @page { size: A4 portrait; margin: 0; }
 }
-/* =============================================
-   Mobile: Title centered on top line,
-   Buttons centered on next line (side by side)
-   ============================================= */
+
 @media (max-width: 640px) {
-
-  .rca-modal-header {
-    flex-direction: column;          /* title above buttons */
-    align-items: center;             /* center everything vertically */
-    text-align: center;              /* center text */
-    gap: 14px;                       /* nice spacing between title & buttons */
-    padding: 16px 12px;              /* balanced padding on small screens */
+  .rca-modal-header { flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 16px 12px; }
+  .rca-modal-title { font-size: 17px; font-weight: 700; width: 100%; text-align: center; }
+  .rca-modal-actions { width: 100%; flex-direction: row; justify-content: center; align-items: center; gap: 12px; flex-wrap: nowrap; }
+  .rca-btn-pdf, .rca-btn-close {
+    font-size: 13.5px; padding: 9px 16px; border-radius: 8px; min-height: 38px; min-width: 110px;
+    display: flex; align-items: center; justify-content: center;
   }
-
-  .rca-modal-title {
-    font-size: 17px;                 /* slightly bigger for better visibility */
-    font-weight: 700;
-    width: 100%;                     /* full width for centering */
-    text-align: center;              /* force center alignment */
-  }
-
-  .rca-modal-actions {
-    width: 100%;                     /* full width row */
-    flex-direction: row;             /* buttons side by side */
-    justify-content: center;         /* CENTER the buttons horizontally */
-    align-items: center;
-    gap: 12px;                       /* comfortable space between buttons */
-    flex-wrap: nowrap;               /* prevent wrapping on small screens */
-  }
-
-  .rca-btn-pdf,
-  .rca-btn-close {
-    font-size: 13.5px;               /* compact but readable */
-    padding: 9px 16px;               /* good tap target size */
-    border-radius: 8px;
-    min-height: 38px;                /* finger-friendly */
-    min-width: 110px;                /* prevent too narrow buttons */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Close button - prominent X */
-  .rca-btn-close {
-    font-size: 20px;                 /* bigger X symbol */
-    padding: 9px 14px;
-    min-width: 44px;
-    background: #ef4444;
-    font-weight: bold;
-  }
-
-  .rca-btn-close:hover,
-  .rca-btn-close:active {
-    background: #dc2626;
-  }
-
-  /* Download button */
-  .rca-btn-pdf {
-    padding: 9px 18px;
-  }
-
-  /* Very small screens — extra compact & centered */
+  .rca-btn-close { font-size: 20px; padding: 9px 14px; min-width: 44px; background: #ef4444; font-weight: bold; }
+  .rca-btn-close:hover, .rca-btn-close:active { background: #dc2626; }
+  .rca-btn-pdf { padding: 9px 18px; }
   @media (max-width: 360px) {
-    .rca-modal-actions {
-      gap: 10px;
-      justify-content: center;      /* still centered */
-    }
-
-    .rca-btn-pdf {
-      font-size: 12.5px;
-      padding: 8px 14px;
-      min-width: 100px;
-    }
-
-    .rca-btn-close {
-      font-size: 18px;
-      padding: 8px 12px;
-      min-width: 40px;
-    }
+    .rca-modal-actions { gap: 10px; }
+    .rca-btn-pdf { font-size: 12.5px; padding: 8px 14px; min-width: 100px; }
+    .rca-btn-close { font-size: 18px; padding: 8px 12px; min-width: 40px; }
   }
 }
-/* ====================== PDF FIXES - BEST FINAL VERSION ====================== */
-.rca-page {
-  background: #ffffff !important;
-}
 
-/* Force black text on all normal content (this fixes blue text) */
+/* PDF FIXES */
+.rca-page { background: #ffffff !important; }
+
 .rca-page .rca-details *,
 .rca-page .rca-table td,
 .rca-page .rca-table th,
@@ -586,7 +500,6 @@
   -webkit-text-fill-color: #111 !important;
 }
 
-/* Keep white text on dark backgrounds */
 .rca-page .rca-annual-badge,
 .rca-page .rca-term-tab,
 .rca-page .rca-result-badge,
@@ -595,13 +508,11 @@
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* School name - Keep original blue */
 .rca-page .rca-school-name {
   color: #1a3a8c !important;
   -webkit-text-fill-color: #1a3a8c !important;
 }
 
-/* Table alignment & stability fixes */
 .rca-page .rca-table {
   table-layout: fixed !important;
   border-collapse: collapse !important;
@@ -615,11 +526,19 @@
   word-break: break-word !important;
 }
 
-.rca-left-block .rca-col-subj {
-  width: var(--subj-w) !important;
-}
+.rca-left-block .rca-col-subj { width: var(--subj-w) !important; }
 
 .rca-td-subj {
   text-align: left !important;
   padding-left: 4px !important;
+}
+
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: start;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  margin: 20px auto;
 }
