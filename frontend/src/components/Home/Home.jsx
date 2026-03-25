@@ -45,8 +45,8 @@ const Home = () => {
       try {
         setIsLoading(true);
 
-        // const BASE_URL = "https://ayadi-report-backend.onrender.com";
-        const BASE_URL = "http://localhost:5000";
+        const BASE_URL = "https://ayadi-report-backend.onrender.com";
+         
         let apiUrl = "";
 
         if (section === "1" || section === "2") {
