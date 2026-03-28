@@ -277,7 +277,7 @@
 .rc-tab-scores-area-r {
   /* spans 6 score cols: 6 × 14.65% = 87.9% of right block */
   width: 87.9%;
-  margin-left: -2%;
+  margin-left: -0.9%;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -637,7 +637,8 @@
   .rc-modal-title {
     font-size: 16px;              /* slightly bigger title */
     font-weight: 700;
-    width: 100%;                  /* full width */
+    width: 100%;    
+    margin-left: 52px;              /* full width */
   }
 
   .rc-btn-pdf,
@@ -702,4 +703,18 @@
 .rca-td-subj {
   text-align: left !important;
   padding-left: 4px !important;
+}
+
+
+@media (max-width: 425px) {
+ .rc-tab-scores-area-r{
+  margin-left: -1.9%;
+}
+ 
+}  
+
+@media (min-width: 425px) and (max-width: 768px) {
+.rc-tab-scores-area-r{
+  margin-left: -1.5%;
+}
 }

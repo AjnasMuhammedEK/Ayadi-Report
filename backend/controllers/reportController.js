@@ -204,186 +204,192 @@ const getStudentsA = async (req, res) => {
 
  
  
- 
-// getStudentsB controller (rename function if needed)
+ // getStudentsB controller - FULLY FIXED & CLEAN
 const getStudentsB = async (req, res) => {
   try {
     const { class: studentClass, roll, phone } = req.body;
 
+    if (!studentClass || !roll || !phone) {
+      return res.status(400).json({ message: "Class, Roll Number and Phone are required." });
+    }
+
     const searchClass = String(studentClass).trim();
-    const searchRoll  = String(roll).trim();
+    const searchRoll = String(roll).trim();
     const searchPhone = String(phone).trim();
 
     const response = await axios.get(process.env.SHEET_B);
-
     const students = response.data;
 
-    const student = students.find(
-      (s) =>
-        String(s["Grade"] || "").trim() === searchClass &&
-        String(s["Roll Number"] || "").trim() === searchRoll &&
-        String(s["Contact Number"] || "").trim() === searchPhone
-    );
+    // Find student - matching exact column headers from your sheet
+    const student = students.find((s) => {
+      return (
+        String(s["4.Grade"] || "").trim() === searchClass &&
+        String(s["5.Roll Number"] || "").trim() === searchRoll &&
+        String(s["8.Contact Number"] || "").trim() === searchPhone
+      );
+    });
 
     if (!student) {
-      return res.status(404).json({ message: "Student not found. Please check Roll Number and Phone." });
+      return res.status(404).json({ 
+        message: "Student not found. Please check Grade, Roll Number and Contact Number." 
+      });
     }
 
-    // ────────────────────────────────────────────────
-    //   Clean & structured data — keys match your SUBJECTS array
-    // ────────────────────────────────────────────────
-    const formattedData = {
-      name:        student["Student Name"]?.trim() || "",
-      fatherName:  student["Father's Name"]?.trim() || "",
-      motherName:  student["Mother's Name"]?.trim() || "",
-      class:       student["Grade"]?.trim() || "",
-      roll:        student["Roll Number"]?.trim() || "",
-      section:     student["Section"]?.trim() || "",
-      dob:         student["Date of Birth"]?.trim() || "",
-      phone:       student["Contact Number"]?.trim() || "",
-      result:      student["Result"]?.trim() || "",
+    // ─────────────────────────────────────────────────────
+    // Structured data for ReportCardModalB component
+    // ─────────────────────────────────────────────────────
+  const formattedData = {
+      name:        student["1.Name of the student"]?.trim() || "",
+      fatherName:  student["2.Father's Name"]?.trim() || "",
+      motherName:  student["3.Mother's Name"]?.trim() || "",
+      class:       student["4.Grade"]?.trim() || "",
+      roll:        student["5.Roll Number"]?.trim() || "",
+      section:     student["6.Section (A,B,C ,D etc)"]?.trim() || "",
+      dob:         student["7.Date of Birth"]?.trim() || "",
+      phone:       student["8.Contact Number"]?.trim() || "",
+      result:      student["107.Result"]?.trim() || "",
 
       discipline: {
-        term1: student["Discipline"]?.trim() || "",
-        term2: student["Discipline"]?.trim() || "",   // same column
+        term1: student["103.Term 1 Discipline Grade"]?.trim() || "",
+        term2: student["104.Term 2 Discipline Grade"]?.trim() || "",
       },
 
       remarks: {
-        term1: student["Remarks"]?.trim() || "",
-        term2: student["Remarks"]?.trim() || "",     // same column
+        term1: student["105.Term 1 Remarks"]?.trim() || "",
+        term2: student["106.Term 2 Remarks"]?.trim() || "",
       },
 
       term1: {
         english: {
-          periodicTest: student["English PT (5)"]?.trim() || "",
-          noteBook:     student["English NB (5)"]?.trim() || "",
-          term1:        student["English Term1 (40)"]?.trim() || "",
-          outOf50:      student["English Out of 50"]?.trim() || "",
-          outOf100:     student["English Out of 100"]?.trim() || "",
-          grade:        student["English Grade"]?.trim() || "",
+          periodicTest: student["9.Term 1 English Periodic Test(5)"]?.trim() || "",
+          noteBook:     student["10.Term 1 English Notebook (5)"]?.trim() || "",
+          term1:        student["11.Term 1 English  Exam (40)"]?.trim() || "",
+          outOf50:      student["12.Term 1 English Term Exam (50)"]?.trim() || "",
+          outOf100:     student["13.Term 1 English Out of (100)"]?.trim() || "",
+          grade:        student["14. Term 1 English Grade"]?.trim() || "",
         },
         malayalam: {
-          periodicTest: student["Malayalam PT (5)"]?.trim() || "",
-          noteBook:     student["Malayalam NB (5)"]?.trim() || "",
-          term1:        student["Malayalam Term1 (40)"]?.trim() || "",
-          outOf50:      student["Malayalam Out of 50"]?.trim() || "",
-          outOf100:     student["Malayalam Out of 100"]?.trim() || "",
-          grade:        student["Malayalam Grade"]?.trim() || "",
+          periodicTest: student["15.Term 1 Malayalam Periodic Test(5)"]?.trim() || "",
+          noteBook:     student["16.Term 1 Malayalam Notebook (5)"]?.trim() || "",
+          term1:        student["17.Term 1 Malayalam Exam (40)"]?.trim() || "",
+          outOf50:      student["18.Term 1 Malayalam Out of (50)"]?.trim() || "",
+          outOf100:     student["19.Term 1 Malayalam Out of (100)"]?.trim() || "",
+          grade:        student["20.Term 1 Malayalam Grade"]?.trim() || "",
         },
         hindi: {
-          periodicTest: student["Hindi PT (5)"]?.trim() || "",
-          noteBook:     student["Hindi NB (5)"]?.trim() || "",
-          term1:        student["Hindi Term1 (40)"]?.trim() || "",
-          outOf50:      student["Hindi Out of 50"]?.trim() || "",
-          outOf100:     student["Hindi Out of 100"]?.trim() || "",
-          grade:        student["Hindi Grade"]?.trim() || "",
+          periodicTest: student["21.Term 1 Hindi Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["22. Term 1 Hindi Notebook (5) "]?.trim() || "",
+          term1:        student["23. Term 1 Hindi Exam (40) "]?.trim() || "",
+          outOf50:      student["24. Term 1 Hindi Out of (50)"]?.trim() || "",
+          outOf100:     student["25.  Term 1 Hindi Out of (100)"]?.trim() || "",
+          grade:        student["26.Term 1 Hindi Grade"]?.trim() || "",
         },
         mathematics: {
-          periodicTest: student["Mathematics PT (5)"]?.trim() || "",
-          noteBook:     student["Mathematics NB (5)"]?.trim() || "",
-          term1:        student["Mathematics Term1 (40)"]?.trim() || "",
-          outOf50:      student["Mathematics Out of 50"]?.trim() || "",
-          outOf100:     student["Mathematics Out of 100"]?.trim() || "",
-          grade:        student["Mathematics Grade"]?.trim() || "",
+          periodicTest: student["27. Term 1 Mathematics Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["28. Term 1 Mathematics Notebook (5) "]?.trim() || "",
+          term1:        student["29. Term 1 Mathematics Exam (40) "]?.trim() || "",
+          outOf50:      student["30.Term 1 Mathematics Out of (50)"]?.trim() || "",
+          outOf100:     student["31. Term 1 Mathematics Out of (100)"]?.trim() || "",
+          grade:        student["32.Term 1 Mathematics Grade"]?.trim() || "",
         },
-        science: {   // ← changed from evs to science
-          periodicTest: student["Science PT (5)"]?.trim() || "",
-          noteBook:     student["Science NB (5)"]?.trim() || "",
-          term1:        student["Science Term1 (40)"]?.trim() || "",
-          outOf50:      student["Science Out of 50"]?.trim() || "",
-          outOf100:     student["Science Out of 100"]?.trim() || "",
-          grade:        student["Science Grade"]?.trim() || "",
+        science: {
+          periodicTest: student["33. Term 1 Science Periodic Test (5)"]?.trim() || "",
+          noteBook:     student["34. Term 1 Science note book (5) "]?.trim() || "",
+          term1:        student["35. Term 1 Science Exam (40) "]?.trim() || "",
+          outOf50:      student["36. Term 1 Science  Exam Out of (50)"]?.trim() || "",
+          outOf100:     student["37.Term 1 Science Exam Out of (100)"]?.trim() || "",
+          grade:        student["38.Term 1 Science Grade"]?.trim() || "",
         },
         socialscience: {
-          periodicTest: student["Social Science PT (5)"]?.trim() || "",
-          noteBook:     student["Social Science NB (5)"]?.trim() || "",
-          term1:        student["Social Science Term1 (40)"]?.trim() || "",
-          outOf50:      student["Social Science Out of 50"]?.trim() || "",
-          outOf100:     student["Social Science Out of 100"]?.trim() || "",
-          grade:        student["Social Science Grade"]?.trim() || "",
+          periodicTest: student["39. Term 1 Social science Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["40. Term 1 Social science Note book (5) "]?.trim() || "",
+          term1:        student["41. Term 1 Social science Exam (40) "]?.trim() || "",
+          outOf50:      student["42. Term 1 Social science Exam (50) "]?.trim() || "",
+          outOf100:     student["43. Term 1 Social science Exam (100) "]?.trim() || "",
+          grade:        student["44. Term 1 Social science Grade"]?.trim() || "",
         },
         valueeducation: {
-          periodicTest: student["Value Education PT (5)"]?.trim() || "",
-          noteBook:     student["Value Education NB (5)"]?.trim() || "",
-          term1:        student["Value Education Term1 (40)"]?.trim() || "",
-          outOf50:      student["Value Education Out of 50"]?.trim() || "",
-          outOf100:     student["Value Education Out of 100"]?.trim() || "",
-          grade:        student["Value Education Grade"]?.trim() || "",
+          periodicTest: student["45. Term 1 Value Education Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["46. Term 1 Value Education Notebook (5) "]?.trim() || "",
+          term1:        student["47. Term 1 Value Education Term Exam (40) "]?.trim() || "",
+          outOf50:      student["48.Term 1 Value Education Out of (50) "]?.trim() || "",
+          outOf100:     student["49.Term 1 Value Education Out of (100)"]?.trim() || "",
+          grade:        student["50.Term 1 Value Education Grade"]?.trim() || "",
         },
         it: {
-          periodicTest: student["IT PT (5)"]?.trim() || "",
-          noteBook:     student["IT NB (5)"]?.trim() || "",
-          term1:        student["IT Term1 (40)"]?.trim() || "",
-          outOf50:      student["IT Out of 50"]?.trim() || "",
-          outOf100:     student["IT Out of 100"]?.trim() || "",
-          grade:        student["IT Grade"]?.trim() || "",
+          periodicTest: student["51. Term 1 IT Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["52. Term 1 IT Notebook (5) "]?.trim() || "",
+          term1:        student["53. Term 1 IT Term Exam (40) "]?.trim() || "",
+          outOf50:      student["54. Term 1 IT Out of (50) "]?.trim() || "",
+          outOf100:     student["55. Term 1 IT Out of (100)"]?.trim() || "",
+          grade:        student["56. Term 1 IT Grade"]?.trim() || "",
         },
       },
 
       term2: {
         english: {
-          periodicTest: student["English PT2 (5)"]?.trim() || "",
-          noteBook:     student["English NB2 (5)"]?.trim() || "",
-          term2:        student["English Term2 (40)"]?.trim() || "",
-          outOf50:      student["English Out of 50"]?.trim() || "",   // same column reused?
-          outOf100:     student["English Out of 100"]?.trim() || "",
-          grade:        student["English Grade"]?.trim() || "",
+          periodicTest: student["57. Term 2 English Periodic Test(5)"]?.trim() || "",
+          noteBook:     student["58. Term 2 English Notebook (5)"]?.trim() || "",
+          term2:        student["59. Term 2 English Term Exam (40)"]?.trim() || "",
+          outOf50:      student["60. Term 2 English Out of (50)"]?.trim() || "",
+          outOf100:     student["61. Term 2 English Out of (100)"]?.trim() || "",
+          grade:        student["62. Term 2 English Grade"]?.trim() || "",
         },
         malayalam: {
-          periodicTest: student["Malayalam PT2 (5)"]?.trim() || "",
-          noteBook:     student["Malayalam NB2 (5)"]?.trim() || "",
-          term2:        student["Malayalam Term2 (40)"]?.trim() || "",
-          outOf50:      student["Malayalam Out of 50"]?.trim() || "",
-          outOf100:     student["Malayalam Out of 100"]?.trim() || "",
-          grade:        student["Malayalam Grade"]?.trim() || "",
+          periodicTest: student["63.Term 2 Malayalam Periodic Test(5)"]?.trim() || "",
+          noteBook:     student["64.Term 2 Malayalam Notebook (5)"]?.trim() || "",
+          term2:        student["65.Term 2 Malayalam Term Exam (40)"]?.trim() || "",
+          outOf50:      student["66.Term 2 Malayalam out of (50)"]?.trim() || "",
+          outOf100:     student["67.Term 2 Malayalam Out of (100)"]?.trim() || "",
+          grade:        student["68.Term 2 Malayalam Grade"]?.trim() || "",
         },
         hindi: {
-          periodicTest: student["Hindi PT2 (5)"]?.trim() || "",
-          noteBook:     student["Hindi NB2 (5)"]?.trim() || "",
-          term2:        student["Hindi Term2 (40)"]?.trim() || "",
-          outOf50:      student["Hindi Out of 50"]?.trim() || "",
-          outOf100:     student["Hindi Out of 100"]?.trim() || "",
-          grade:        student["Hindi Grade"]?.trim() || "",
+          periodicTest: student["69.Term 2 Hindi Periodic Test(5)"]?.trim() || "",
+          noteBook:     student["70.Term 2 Hindi Note book (5)"]?.trim() || "",
+          term2:        student["71.Term 2 Hindi Term Exam (40)"]?.trim() || "",
+          outOf50:      student["72.Term 2 Hindi out of (50)"]?.trim() || "",
+          outOf100:     student["73.Term 2 Hindi Out of (100)"]?.trim() || "",
+          grade:        student["74.Term 2 Hindi Grade"]?.trim() || "",
         },
         mathematics: {
-          periodicTest: student["Mathematics PT2 (5)"]?.trim() || "",
-          noteBook:     student["Mathematics NB2 (5)"]?.trim() || "",
-          term2:        student["Mathematics Term2 (40)"]?.trim() || "",
-          outOf50:      student["Mathematics Out of 50"]?.trim() || "",
-          outOf100:     student["Mathematics Out of 100"]?.trim() || "",
-          grade:        student["Mathematics Grade"]?.trim() || "",
+          periodicTest: student["75. Term 2 Mathematics Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["76.Term 2 Mathematics Notebook (5) "]?.trim() || "",
+          term2:        student["77. Term 2 Mathematics Term Exam (40)  "]?.trim() || "",
+          outOf50:      student["78. Term 2 Mathematics Out of (50)"]?.trim() || "",
+          outOf100:     student["79.  Term 2 Mathematics Out of (100)   "]?.trim() || "",
+          grade:        student["80. Term 2 Mathematics Grade"]?.trim() || "",
         },
         science: {
-          periodicTest: student["Science PT2 (5)"]?.trim() || "",
-          noteBook:     student["Science NB2 (5)"]?.trim() || "",
-          term2:        student["Science Term2 (40)"]?.trim() || "",
-          outOf50:      student["Science Out of 50"]?.trim() || "",
-          outOf100:     student["Science Out of 100"]?.trim() || "",
-          grade:        student["Science Grade"]?.trim() || "",
+          periodicTest: student["81. Term 2 Science Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["82. Term 2 Science Notebook (5) "]?.trim() || "",
+          term2:        student["83. Term 2 Science Term Exam (40) "]?.trim() || "",
+          outOf50:      student["84. Term 2 Science Term Exam (50) "]?.trim() || "",
+          outOf100:     student["85. Term 2 Science Term Exam (100) "]?.trim() || "",
+          grade:        student["86.Term 2 Science Grade"]?.trim() || "",
         },
         socialscience: {
-          periodicTest: student["Social Science PT2 (5)"]?.trim() || "",
-          noteBook:     student["Social Science NB2 (5)"]?.trim() || "",
-          term2:        student["Social Science Term2 (40)"]?.trim() || "",
-          outOf50:      student["Social Science Out of 50"]?.trim() || "",
-          outOf100:     student["Social Science Out of 100"]?.trim() || "",
-          grade:        student["Social Science Grade"]?.trim() || "",
+          periodicTest: student["87. Term 2 Social Science Periodic Test (5) "]?.trim() || "",
+          noteBook:     student["88. Term 2 Social Science Note book (5) "]?.trim() || "",
+          term2:        student["89. Term 2 Social Science Term Exam (40) "]?.trim() || "",
+          outOf50:      student["89. Term 2 Social Science Term Exam (50) "]?.trim() || "",
+          outOf100:     student["90. Term 2 Social Science Term Exam (100)"]?.trim() || "",
+          grade:        student["91. Term 2 Social Science Grade"]?.trim() || "",
         },
         valueeducation: {
-          periodicTest: student["Value Education PT2 (5)"]?.trim() || "",
-          noteBook:     student["Value Education NB2 (5)"]?.trim() || "",
-          term2:        student["Value Education Term2 (40)"]?.trim() || "",
-          outOf50:      student["Value Education Out of 50"]?.trim() || "",
-          outOf100:     student["Value Education Out of 100"]?.trim() || "",
-          grade:        student["Value Education Grade"]?.trim() || "",
+          periodicTest: student["91. Term 2 Value Education Periodic Test (5)"]?.trim() || "",
+          noteBook:     student["92. Term 2 Value Education Notebook (5)"]?.trim() || "",
+          term2:        student["93. Term 2 Value Education Term Exam (40) "]?.trim() || "",
+          outOf50:      student["94. Term 2 Value Education Out of (50) "]?.trim() || "",
+          outOf100:     student["95. Term 2 Value Education Out of (100) "]?.trim() || "",
+          grade:        student["96. Term 2 Value Education Grade"]?.trim() || "",
         },
         it: {
-          periodicTest: student["IT PT2 (5)"]?.trim() || "",
-          noteBook:     student["IT NB2 (5)"]?.trim() || "",
-          term2:        student["IT Term2 (40)"]?.trim() || "",
-          outOf50:      student["IT Out of 50"]?.trim() || "",
-          outOf100:     student["IT Out of 100"]?.trim() || "",
-          grade:        student["IT Grade"]?.trim() || "",
+          periodicTest: student["97. Term 2 IT Periodic Test (5)"]?.trim() || "",
+          noteBook:     student["98. Term 2 IT Notebook (5) "]?.trim() || "",
+          term2:        student["99. Term 2 IT Term Exam (40)"]?.trim() || "",
+          outOf50:      student["100. Term 2 IT Out of (50) "]?.trim() || "",
+          outOf100:     student["101. Term 2 IT Out of (100) "]?.trim() || "",
+          grade:        student["102. Term 2 IT Grade"]?.trim() || "",
         },
       },
     };
@@ -392,10 +398,13 @@ const getStudentsB = async (req, res) => {
 
   } catch (error) {
     console.error("Error fetching student data:", error);
-    return res.status(500).json({ message: "Server error. Please try again later." });
+    return res.status(500).json({ 
+      message: "Server error while fetching report card data." 
+    });
   }
 };
 
+export default getStudentsB;
 
 const getStudentsC = async (req, res) => {
   try {

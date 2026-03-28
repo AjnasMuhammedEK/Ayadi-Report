@@ -705,3 +705,7 @@
   text-align: left !important;
   padding-left: 4px !important;
 }
+
+.rc-tr-lower td.rc-td {
+  text-align: center;   /* 👈 add this */
+}
