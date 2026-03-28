@@ -46,7 +46,8 @@ const Home = () => {
         setIsLoading(true);
 
         const BASE_URL = "https://ayadi-report-backend.onrender.com";
-         
+
+        
         let apiUrl = "";
 
         if (section === "1" || section === "2") {
@@ -61,7 +62,10 @@ const Home = () => {
 
         const response = await fetch(apiUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": "ayadi_r-p_o-56281jjh534r3DedchdDEJFH3Jhs976hgug_jdh226_8829"
+          },
           body: JSON.stringify({
             class: section,
             roll: rollNumber,
@@ -123,7 +127,7 @@ const handleSubmit = () => {
         </nav>
 
         <header className="home-header">
-          <div className="badge">🏫 School Certificate Management System</div>
+          {/* <div className="badge">🏫 School Certificate Management System</div> */}
           <h1>Access Student <span>Certificates</span></h1>
           <p>
             Please enter the student's academic details to securely
@@ -133,7 +137,7 @@ const handleSubmit = () => {
 
         <div className="home-card">
           <div className="form-group">
-            <label>Class / Section <span className="required">*</span></label>
+            <label>GRADE <span className="required">*</span></label>
             <div className="input-wrap select-wrap">
               <IconClass />
               <select

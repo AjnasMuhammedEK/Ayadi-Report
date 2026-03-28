@@ -216,7 +216,7 @@
   display: flex;
   align-items: flex-end;
   width: 100%;
-  margin-left: 1.34em;
+  margin-left: 1.39em;
 }
 
 .rca-tab-subj-space {
@@ -242,7 +242,7 @@
 
 .rca-tab-scores-area-r {
   width: 87.9%;
-  margin-left: -0.55em;
+  margin-left: -0.9%;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -541,4 +541,22 @@
   text-align: start;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   margin: 20px auto;
+}
+ 
+@media (max-width: 425px) {
+ 
+
+ .rca-tab-left-inner{
+  margin-left:1.3em ;
+ }
+
+ .rca-tab-scores-area-r{
+  margin-left: -1.9%;
+ }
+}  
+
+@media (min-width: 426px) and (max-width: 768px) {
+  .rca-tab-scores-area-r {
+    margin-left: -0.4em;
+  }
 }
